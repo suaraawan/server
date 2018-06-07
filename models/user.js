@@ -24,15 +24,7 @@ const userSchema = new Schema ({
     password: {
         type: String,
         required: "Please put in your password",
-        min: [7, 'Password too short!'],
-        validate: {
-            validator: function(value) {
-                let validate = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]/;
-                return validate.test(value);
-            },
-            message: 'Password needs to include at least 1 number, 1 special character, 1 lowercase, and 1 uppercase letter!'
-          },
-        unique: true
+        required: [true, 'Password cannot be empty']
     }
     
 }, {timestamps: true})
@@ -62,6 +54,6 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
 };
 
 
-const User = mongoose.model("Users", userSchema);
+const User = mongoose.model("user", userSchema);
 
 module.exports = User;

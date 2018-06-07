@@ -1,6 +1,5 @@
 const mongoose = require ("mongoose");
 const Schema = mongoose.Schema;
-// const ObjectId = ==>jangan lupa diisi
 
 const musicSchema = new Schema ({
     title: {
@@ -13,8 +12,9 @@ const musicSchema = new Schema ({
         required: "Please put in your file"
         
     },
-    userId: {
-        type: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+    user: {
+        type: Schema.Types.ObjectId, 
+        ref: 'user' 
     }
     
 }, {timestamps: true})
