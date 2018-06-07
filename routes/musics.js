@@ -4,13 +4,19 @@ const express = require('express'),
       musics = require('../helpers/musics')
 
 const Music = require('../controllers/music_controller.js')
+
+const {
+  loginCheck
+} = require('../middlewares/auth')
+
 /* GET main endpoint. */
 router.get('/', (req, res, next) => {
   res.send({ message: 'Welcome Buddy!' })
 }) 
 
 router.post('/upload',
-  musics.multer.single('music'), 
+  loginCheck,
+  musics.multer.single('url'), 
   musics.sendUploadToGCS,
   Music.upload
   // (req,res)=>
@@ -21,6 +27,8 @@ router.post('/upload',
   //     link: req.file.cloudStoragePublicUrl
   //   })
   )
+router.get('/get', loginCheck, Music.getMusic)
+router.get('/list', Music.musicList)
 
 
 module.exports = router
