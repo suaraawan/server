@@ -13,10 +13,12 @@ const {DBUSER, DBPASS} = process.env;
 
 const url = `mongodb://${DBUSER}:${DBPASS}@ds151530.mlab.com:51530/suaraawan`
 
+// const url = 'mongodb://localhost/tugas-kelompok';
+
 mongoose.connect(url, function(req, err){
     console.log("database connected");
 })
- 
+
 
 var app = express();
 // view engine setup

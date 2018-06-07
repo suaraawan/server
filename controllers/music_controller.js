@@ -1,15 +1,14 @@
-const MusicModel = require("../models/music.js")
+const MusicModel = require("../models/music")
 const jwt = require('jsonwebtoken')
 
 class Music {
-
 	static upload(req,res) {
 		// const token = jwt.decode(req.body.userId)
 		console.log(req.body,req.file.cloudStoragePublicUrl)
 		MusicModel.create( {
 			title: req.body.title,
 			url: req.file.cloudStoragePublicUrl,
-			user: req.decoded.id
+			// user: req.decoded.id
 		})
 	    .then((data)=>{
 	      res.status(200).json({message:"your file uploaded successfully",data})
@@ -32,7 +31,7 @@ class Music {
 			res.status(500).send(err)
 		})
 	}
-	
+
 	static musicList(req, res) {
 		MusicModel.find()
 		.then(musics => {

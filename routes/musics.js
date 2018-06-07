@@ -12,11 +12,11 @@ const {
 /* GET main endpoint. */
 router.get('/', (req, res, next) => {
   res.send({ message: 'Welcome Buddy!' })
-}) 
+})
 
 router.post('/upload',
   loginCheck,
-  musics.multer.single('url'), 
+  musics.multer.single('url'),
   musics.sendUploadToGCS,
   Music.upload
   // (req,res)=>
