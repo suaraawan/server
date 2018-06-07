@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var usersRouter = require('./routes/users');
+var musicsRouter = require('./routes/musics');
 
 const mongoose = require ("mongoose");
 require("dotenv").config();
@@ -13,7 +14,6 @@ const {DBUSER, DBPASS} = process.env;
 const url = `mongodb://${DBUSER}:${DBPASS}@ds151530.mlab.com:51530/suaraawan`
 
 mongoose.connect(url, function(req, err){
- 
     console.log("database connected");
 })
  
@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/users', usersRouter);
-
+app.use('/musics', musicsRouter);
 
 
 // catch 404 and forward to error handler
