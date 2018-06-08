@@ -30,5 +30,6 @@ router.post('/upload',
 router.get('/get', loginCheck, Music.getMusic)
 router.get('/list', Music.musicList)
 
+router.delete('/:id', Music.deleteSong)
 
 module.exports = router

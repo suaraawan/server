@@ -1,93 +1,144 @@
 const User = require("../models/user");
 const jwt = require ("jsonwebtoken");
 
-exports.getUsers = function(req,res){
-    User.find({})
-    .then(function(users){
-        res.status(200)
-        .send({
-            message: "Here are the name of the users: ",
-            users
-        })
-    })
-    .catch(function(err){
-        res.status(409)
-        .send({
-            message: err.message
-        })
-    })
-}
+module.exports = {
 
-exports.signUp = function(req,res){
-    let {email, username, password} = req.body;
-    console.log(req.body);
-   User.create({
-       email,
-       username,
-       password,
-   })
-   .then(function(){
-        User.find({})
-        .then(function(user){
-            res.status(201)
-            .send({
-                message: "User data has been created",
-                user,
+  getUsers(req,res){
+      User.find({})
+      .then(function(users){
+          res.status(200)
+          .send({
+              message: "Here are the name of the users: ",
+              users
+          })
+      })
+      .catch(function(err){
+          res.status(409)
+          .send({
+              message: err.message
+          })
+      })
+  },
+  signUp(req, res){
+
+    User.findOne({ email: req.body.email }, function(err, user) {
+
+      if (err) {
+        res.status(404).json('bad request')
+      } else {
+
+        if (user) {
+
+          res.status(404).json('email is already exists')
+
+        } else {
+
+          const newUser = {
+            username: req.body.fullname,
+            email: req.body.email,
+            password: req.body.password
+          }
+
+          User.create(newUser, function(err, success) {
+            if (err) {
+              res.status(404).json('bad request')
+            } else {
+              res.status(201).json('success add user');
+            }
+          })
+
+        }
+
+      }
+
+    })
+
+  },
+  signIn (req, res){
+
+    if (req.headers.id) {
+
+      User.find({email: req.headers.email}, ( err, user ) => {
+
+        if (user.length != 0) {
+
+          console.log(user);
+
+          const jwtToken = jwt.sign({ email: req.headers.email, id: user[0]._id }, process.env.secretKey)
+          res.status(200).json({ jwtToken })
+
+        } else {
+
+          const newUser = {
+            username: req.headers.name,
+            email: req.headers.email,
+            password: String(req.headers.id)
+          }
+
+          User.create(newUser, function(err, success) {
+
+            if (err) {
+              res.status(404).json('bad request')
+            } else {
+              console.log(user._id);
+              const jwtToken = jwt.sign({ email: req.headers.email, id: user[0]._id }, process.env.secretKey)
+              res.status(200).json({ jwtToken })
+            }
+
+          })
+
+        }
+
+      })
+
+    } else {
+
+      User.findOne({email: req.body.email}, ( err, user ) => {
+
+        console.log(user);
+
+
+        if (err) {
+
+          res.status(404).json('user not found')
+
+        } else {
+
+          if (user) {
+
+            user.comparePassword(req.body.password, function(err, isMatch) {
+
+              if (err) {
+                res.status(404).json(err)
+              } else {
+
+                if (!isMatch) {
+
+                  res.status(400).json('wrong password')
+
+                } else {
+
+                  const jwtToken = jwt.sign({ email: req.body.email, id: user._id }, process.env.secretKey)
+                  res.status(200).json({ jwtToken })
+
+                }
+
+              }
+
             })
-        })
-        .catch(function(err){
-            res.status(409)
-            .send({
-                message:  err.message
-            })
-        })
-   })
-   .catch(function(err){
-       console.log("masuk error");
-        res.status(409)
-        .send({
-            message: err.message
-        })
-    })
-}
 
+          } else {
 
+            res.status(400).json('user not found')
 
-exports.signIn = function (req, res){
-    let {email, password} = req.body;
-    console.log(typeof email);
-    User.findOne({email: email})
-    .then(function(user){
+          }
 
-       user.comparePassword(password, function(err, isMatch){
-           if(err){
-               res.status(404)
-               .send({
-                   message: err.message
-               })
-           }
-           else{
-               if(isMatch){
-                    let token = jwt.sign({
-                        id: user._id,
-                    }, process.env.secretKey)
+        }
 
-                    res.status(200).send({
-                        token: token,
-                        user: user
-                    });
-               }
-               else{
-                    res.status(400).send({
-                        message: "Wrong Password!"
-                    })
-               }
-           }
-       });
-    })
-    .catch(function(err){
-        res.status(404).send({
-            message: "Email not found!"
-        })
-    })
-}
+      })
+
+    }
+
+  }
+
+};
