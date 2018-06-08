@@ -6,8 +6,8 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^2.0.1",
     "@google-cloud/storage": "^1.7.0",
+    "bcrypt": "^2.0.1",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "debug": "~2.6.9",
